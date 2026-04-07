@@ -1,0 +1,5 @@
+liczba = int(input("Podaj liczbę całkowitą:"))
+binarna = bin(liczba)
+szesnastkowa = hex(liczba)
+print(f"liczba binarna: {binarna}")
+print(f"liczba szesnatkowa: {szesnastkowa}")

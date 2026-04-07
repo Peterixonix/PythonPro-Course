@@ -1,0 +1,18 @@
+dir = Pokaż zawartość bieżącego folderu
+pwd = Pokaż w którym się znajdujesz
+cd nazwa folderu - przejdź do wskazanego folderu
+cd .. - przechodzisz do wcześniejszego folderu
+mkdir - tworzysz nowy folder
+python - uruchom tryb interaktywny python
+
+if, else - jeśli masz dwa warunki
+if, elif, else - jeśli masz więcej niż dwa
+
+input - jeśli chcesz zadać pytanie i oczekujesz odpowiedzi
+int - do liczb całkowitych
+float - do liczb po przecinku
+
+and - wszystkie spełnione warunki
+or - przynajmniej jeden spełniony warunek
+
+ctrl + Shift + x - do zainstalowania dodatków

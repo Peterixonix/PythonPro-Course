@@ -1,0 +1,5 @@
+imie = input("Jak masz na imię:")
+print(imie)
+wiek = input("Ile masz lat:")
+print(wiek)
+print("Cześć " + imie + " Wiem, że masz " + wiek + " lat!")
