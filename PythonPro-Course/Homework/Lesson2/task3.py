@@ -1,5 +1,0 @@
-długość = float(input('Podaj długość prostokąta: '))
-szerokość = float(input('Podaj szerokość prostokąta: '))
-obwód = 2*(długość+szerokość)
-print(obwód)
-print(f'Obwód wynosi {obwód}')
