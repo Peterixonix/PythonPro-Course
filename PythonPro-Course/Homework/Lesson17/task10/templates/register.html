@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rejestracja na wydarzenie</title>
+    <style>
+        label {
+            display: block;
+            margin: 8px 0 4px;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 260px;
+            padding: 6px;
+        }
+
+        .error {
+            color: #b00020;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Rejestracja na wydarzenie</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div>
+        {% for category, msg in messages %}
+        <div class="{{ category }}">{{ msg }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <!-- c) Formularz wysyła metodą POST -->
+    <form method="POST" action="{{ url_for('register') }}">
+        <label for="name">Imię i nazwisko</label>
+        <input id="name" name="name" type="text" value="{{ name or '' }}" required>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" value="{{ email or '' }}" required>
+        <div style="margin-top:12px;">
+            <button type="submit">Zarejestruj</button>
+        </div>
+    </form>
+</body>
+
+</html>

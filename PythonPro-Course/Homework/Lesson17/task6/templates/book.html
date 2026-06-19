@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="" pl>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Książka</title>
+</head>
+
+<body>
+    <h1>Witaj!</h1>
+    <h2>Książka:</h2>
+    <ul>
+        {% for books in book, book2, book3%}
+        <li>{{books}}</li>
+        {%endfor%}
+    </ul>
+
+
+</body>
+
+</html>
