@@ -1,0 +1,55 @@
+Zmodyfikuj model Article, dodając do niego pole category typu ForeignKey do modelu
+Category (on_delete=models.CASCADE). Przypisz w shellu każdemu artykułowi jakąś
+kategorię. Następnie zmodyfikuj szablon category_detail.html tak, aby pod nazwą kategorii
+wyświetlał listę wszystkich artykułów należących do tej kategorii.
+Wskazówka: Po stworzeniu relacji, z obiektu kategorii możesz odwołać się do powiązanych
+artykułów przez category.article_set.all().
+
+./app/models.py
+
+
+
+from django.db import models
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.title
+
+python manage.py shell
+
+from app.models import Article, Category
+categories = Category.objects.all()
+articles = Article.objects.all()
+for i, article in enumerate(articles):
+    article.category = categories[i % len(categories)]
+    article.save()
+
+
+./app/templates/category_detail.html
+
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegóły kategorii</title>
+</head>
+<body>
+    <h1>{{ category.name }}</h1>
+    <h2>Artykuły w tej kategorii:</h2>
+    <ul>
+        {% for article in category.article_set.all %}
+            <li>{{ article.title }}</li>
+        {% empty %}
+            <li>Brak artykułów w tej kategorii.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

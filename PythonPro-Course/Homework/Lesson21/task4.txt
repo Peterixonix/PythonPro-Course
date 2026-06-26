@@ -1,0 +1,37 @@
+Stwórz plik style.css w odpowiednim katalogu static. Dodaj do niego regułę, która
+zmienia kolor tła strony (body { background-color: #f0f8ff ; }). Podłącz ten plik CSS do
+szablonu z listą kategorii.
+
+./app/static/style.css
+
+body {
+    background-color: #f0f8ff;
+}
+
+./app/templates/categories.html
+
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista kategorii</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+
+<body>
+    <h1>Lista kategorii</h1>
+    <ul>
+        {% for category in categories %}
+        <li>{{ category.name }}</li>
+        {% empty %}
+        <li>Brak kategorii.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

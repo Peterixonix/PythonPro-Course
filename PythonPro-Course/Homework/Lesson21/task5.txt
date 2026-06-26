@@ -1,0 +1,10 @@
+W konsoli Django (shell) napisz zapytanie ORM, które pobierze tylko kategorię o nazwie
+"Sport". Użyj metody get().
+
+Konsola
+
+python manage.py shell
+
+from app.models import Category
+c = Category.objects.get(name = "Sport")
+print(f'Znalezniono kategorie: {c.name}')

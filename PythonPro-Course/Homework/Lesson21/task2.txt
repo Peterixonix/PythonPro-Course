@@ -1,0 +1,19 @@
+Używając konsoli Django (python manage.py shell), stwórz 3 różne obiekty modelu
+Category (np. "Sport", "Technologia", "Kultura") i zapisz je w bazie danych.
+
+
+Konsola
+
+python manage.py shell
+
+from app.models import Category
+
+Category.objects.create(name = "Sport")
+Category.objects.create(name = "Technologia)
+Category.objects.create(name = "Kultura")
+Category.objects.create(name = "Książki")
+Category.objects.create(name = "Elektronika")
+
+Category.objects.all()
+
+<QuerySet [<Category: Sport>, <Category: Technologia>, <Category: Kultura>, <Category: Książki>, <Category: Elektronika>]>

@@ -1,0 +1,59 @@
+W szablonie listy artykułów (article_list.html) dodaj prosty formularz HTML (
+...
+) z jednym polem . W widoku article_list_view sprawdź, czy w
+żądaniu GET istnieje parametr q (request.GET.get('q')). Jeśli tak, przefiltruj artykuły, aby
+pokazać tylko te, których tytuł zawiera szukaną frazę.
+(challenge)
+
+
+
+
+
+
+./app/views.py
+
+from django.shortcuts import render, get_object_or_404
+from .models import Category, Article
+
+def view_categories(request):
+    categories = Category.objects.all()
+    return render(request, 'categories.html', {"categories":categories})
+def category_detail_view(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    return render(request, 'category_detail.html', {"category":category})
+def article_list_view(request):
+    query = request.GET.get('q')
+    articles = Article.objects.filter(is_published=True)
+    if query:
+        articles = articles.filter(title_icontains=query)
+    return render(request, 'article_list.html', {
+        "articles":articles,
+        'query': query
+})
+
+
+./app/templates/article_list.html
+
+
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista artykułów</title>
+</head>
+<body>
+    <h1>Lista artykułów</h1>
+    <form method="GET">
+        <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Szukaj po tytule">
+        <button type="submit">Szukaj</button>
+    </form>
+    <ul>
+        {% for article in articles %}
+            <li>{{ article.title }}</li>
+        {% empty %}
+            <li>Brak artykułów.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

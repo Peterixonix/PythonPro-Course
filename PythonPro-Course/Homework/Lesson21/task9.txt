@@ -1,0 +1,21 @@
+Domyślnie tytuł w panelu admina to "Django administration". Znajdź w internecie, jak
+nadpisać szablon admin/base.html, aby zmienić ten tytuł na "Panel Administratora Mojej
+Strony".
+
+
+./app/admin.py
+
+
+from django.contrib import admin
+admin.site.site_header = "Panel Administratora Mojej Strony"
+admin.site.site_title = "Panel Administratora"
+admin.site.index_title = "Witaj w panelu administracyjnym"
+
+./templates/base_site.html
+
+
+{% extends "admin/base.html" %}
+{% block title %}Panel Administratora Mojej Strony{% endblock %}
+{% block branding %}
+<h1 id="site-name">Panel Administratora Mojej Strony</h1>
+{% endblock %}

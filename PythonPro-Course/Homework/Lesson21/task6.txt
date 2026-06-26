@@ -1,0 +1,42 @@
+Stwórz nowy widok category_detail_view, który będzie przyjmował w URL-u ID kategorii
+(np. /categories/1/). Widok powinien pobrać z bazy danych tylko ten jeden, konkretny obiekt
+Category i przekazać go do nowego szablonu category_detail.html, który wyświetli jego
+nazwę w nagłówku.
+
+
+
+./app/views.py
+
+from django.shortcuts import render, get_object_or_404
+from .models import Category
+
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'categories.html', {'categories': categories})
+def category_detail_view(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    return render(request, 'category_detail.html', {'category': category})
+
+./app/urls.py
+
+from django.urls import path
+from .views import category_list, category_detail_view
+
+urlpatterns = [path('categories/', category_list, name = 'category_list'),
+               path('categories/<int:category_id>', category_detail_view, name = 'category_detail')]
+
+./app/templates/category_detail.html
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.name }}</title>
+</head>
+
+<body>
+    <h1>{{ category.name }}</h1>
+</body>
+
+</html>

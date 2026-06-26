@@ -1,0 +1,51 @@
+./app/models.py
+
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.title
+
+
+python manage.py makemigrations
+python manage.py migrate
+
+
+./app/views.py
+
+
+from django.shortcuts import render
+from .models import Article
+def article_list_view(request):
+    articles = Article.objects.filter(is_published=True)
+    return render(request, 'article_list.html', {'articles': articles})
+
+
+./app/templates/category_detail.html
+
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista artykułów</title>
+</head>
+<body>
+    <h1>Lista artykułów</h1>
+    <ul>
+        {% for article in articles %}
+            <li>
+                {{ article.title }}
+                {% if article.created_at|timesince|slice:":1" == "0" or article.created_at|timesince|slice:":1" == "1" or article.created_at|timesince|slice:":1" == "2" %}
+                    <span>NOWOŚĆ!</span>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Brak artykułów.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

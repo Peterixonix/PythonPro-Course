@@ -1,0 +1,17 @@
+Stwórz w swojej aplikacji nowy model o nazwie Category z jednym polem name typu
+CharField. Następnie wygeneruj i wykonaj migracje, aby stworzyć odpowiednią tabelę w
+bazie danych.
+
+
+./app/models.py
+
+
+from django.db import models
+
+class Category(models.Model):
+    name = models.CharField()
+    def __str__(self) -> str:
+        return self.name
+
+python manage.py makemigrations
+python manage.py migrate
