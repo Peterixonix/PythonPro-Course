@@ -1,0 +1,4 @@
+W swoim wirtualnym środowisku zainstaluj bibliotekę Faker za pomocą pip.
+
+
+pip install Faker

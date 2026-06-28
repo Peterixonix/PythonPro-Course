@@ -1,0 +1,63 @@
+Zmodyfikuj widok strony głównej tak, aby wyświetlał tylko 5 najnowszych postów. Użyj
+order_by() i "krojenia" (slicing) QuerySetu.
+
+
+./app/models.py
+
+
+from django.db import models
+
+class Category(models.Model):
+    name = models.CharField(max_length=200)
+    def __str__(self):
+            return self.name
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField(null=True, blank=True)
+    publication_date = models.DateTimeField(null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    def __str__(self):
+            return self.title
+
+
+./app/views.py
+
+
+def home_view(request):
+    posts = Post.objects.order_by('-publication_date')[:5]
+    return render(request, 'home.html', {'posts': posts})
+
+
+./app/templates/home.html
+
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Strona główna</title>
+</head>
+
+<body>
+    <h1>5 najnowszych postów</h1>
+    <ul>
+        {% for post in posts %}
+        <li>{{ post.title }} - {{ post.publication_date }}</li>
+        {% empty %}
+        <li>Brak postów.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
+
+
+./app/urls.py
+
+
+from django.urls import path
+from . import views
+
+path('', views.home_view, name= 'home_view')
+path('category/<int:category_id>', views.category_posts, name='category_posts')

@@ -1,0 +1,50 @@
+Stwórz własną komendę manage.py o nazwie seed_blog. Komenda powinna:
+a. Usunąć wszystkie istniejące posty i kategorie.
+b. Stworzyć 5-10 predefiniowanych kategorii (np. "Technologia", "Podróże", "Kulinaria").
+c. Stworzyć 100 losowych postów za pomocą Faker i losowo przypisać każdy z nich do
+jednej z nowo utworzonych kategorii.
+
+
+
+./app/management/commands/seed_blog.py
+
+
+
+import random
+from django.core.management.base import BaseCommand
+from faker import Faker
+from app.models import Category, Post
+class Command(BaseCommand):
+    help = 'Seeduje bazę kategorii i postów'
+    def handle(self, *args, **kwargs):
+        fake = Faker('pl_PL')
+        self.stdout.write('Usuwanie starych danych...')
+        Post.objects.all().delete()
+        Category.objects.all().delete()
+        self.stdout.write('Tworzenie kategorii...')
+        category_names = [
+            'Technologia',
+            'Podróże',
+            'Kulinaria',
+            'Sport',
+            'Biznes',
+            'Edukacja',
+            'Zdrowie'
+        ]
+        categories = []
+        for name in category_names:
+            category = Category.objects.create(name=name)
+            categories.append(category)
+        self.stdout.write('Tworzenie postów...')
+        for _ in range(100):
+            Post.objects.create(
+                title=fake.sentence(nb_words=6),
+                content=' '.join(fake.paragraphs(nb=5)),
+                publication_date=fake.date_time_this_year(),
+                category=random.choice(categories)
+            )
+        self.stdout.write(self.style.SUCCESS('Seeder zakończony sukcesem.'))
+
+
+
+python manage.py seed_blog

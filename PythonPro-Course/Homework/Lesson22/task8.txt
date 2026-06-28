@@ -1,0 +1,26 @@
+Zaprojektuj i zaimplementuj system tagów. Stwórz model Tag z polem name. Post może
+mieć wiele tagów, a tag może być przypisany do wielu postów. Jakiego pola relacyjnego
+użyjesz w modelu Post? (podpowiedź: ManyToManyField). Pamiętaj o migracjach.
+
+
+./app/models.py
+
+
+from django.db import models
+
+class Category(models.Model):
+    name = models.CharField(max_length=200)
+    def __str__(self):
+        return self.name
+class Tag(models.Model):
+    name = models.CharField(max_length=200)
+    def __str__(self):
+        return self.name
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField(null=True, blank=True)
+    publication_date = models.DateTimeField(null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    def __str__(self):
+        return self.title

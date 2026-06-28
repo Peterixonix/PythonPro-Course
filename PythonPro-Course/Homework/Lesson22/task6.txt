@@ -1,0 +1,73 @@
+Stwórz prostą wyszukiwarkę. Dodaj formularz na stronie głównej, który wysyła zapytanie
+GET z frazą szukaną. Stwórz widok, który odbierze tę frazę i odfiltruje posty, których tytuł
+lub treść zawiera daną frazę (__icontains będzie tu bardzo pomocne).
+
+
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Category, Post
+from django.db.models import Q
+
+
+./app/views.py
+
+from django.shortcuts import render, get_object_or_404
+from .models import Category, Post
+from django.db.models import Q
+
+
+
+def category_posts(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    posts = Post.objects.filter(category = category)
+    return render(request, 'category_posts.html', {
+        'category': category,
+        'posts': posts
+    })
+def home_view(request):
+    query = request.GET.get('q','')
+    posts = Post.objects.all()
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) | Q(content__icontains=query))
+        
+    posts= posts.order_by('-publication_date')[:20]
+    return render(request, 'home.html', {
+        'posts': posts,
+        'query': query})
+
+
+./app/templates/home.html
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wyszukiwarka postów</title>
+</head>
+
+<body>
+    <h1>Posty</h1>
+    <form method="GET">
+        <input type="text" name="q" value="{{ query }}" placeholder="Szukaj postów">
+        <button type="submit">Szukaj</button>
+    </form>
+    <ul>
+        {% for post in posts %}
+        <li>
+            <strong>{{ post.title }}</strong><br>
+            {{ post.content|truncatewords:20 }}
+        </li>
+        {% empty %}
+        <li>Brak wyników.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

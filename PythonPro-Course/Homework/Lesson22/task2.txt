@@ -1,0 +1,47 @@
+Napisz widok, który po wejściu na URL /category/<category_id>/ wyświetli listę wszystkich
+postów należących do danej kategorii. Użyj metody filter() na QuerySet
+
+
+
+./app/views.py
+
+def category_posts(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    posts = Post.objects.filter(category = category)
+    return render(request, 'category_posts.html', {
+        'category': category,
+        'posts': posts
+    })
+
+
+./app/urls.py
+
+from django.urls import path
+from . import views
+
+path('category/<int:category_id>', views.category_posts, name='category_posts')
+
+./app/templates/category_posts.html
+
+
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Posty w kategorii</title>
+</head>
+
+<body>
+    <h1>{{category.name}}</h1>
+    <ul>
+        {% for post in posts %}
+        <li>{{post.title}}</li>
+        {% empty %}
+        <li>Brak postów w tej kategorii.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>

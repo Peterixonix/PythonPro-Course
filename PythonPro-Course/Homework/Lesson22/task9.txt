@@ -1,0 +1,55 @@
+Rozbuduj swoją komendę seed_blog. Po stworzeniu postów, skrypt powinien losowo
+przypisać od 1 do 5 istniejących tagów do każdego posta.
+
+
+./app/management/commands/seed_blog.py
+
+
+import random
+from django.core.management.base import BaseCommand
+from faker import Faker
+from app.models import Category, Post, Tag
+class Command(BaseCommand):
+    help = 'Seeduje bazę kategorii, tagów i postów'
+    def handle(self, *args, **kwargs):
+        fake = Faker('pl_PL')
+        self.stdout.write('Usuwanie starych danych...')
+        Post.objects.all().delete()
+        Category.objects.all().delete()
+        Tag.objects.all().delete()
+        self.stdout.write('Tworzenie kategorii...')
+        category_names = [
+            'Technologia',
+            'Podróże',
+            'Kulinaria',
+            'Sport',
+            'Biznes',
+            'Edukacja',
+            'Zdrowie'
+        ]
+        categories = [Category.objects.create(name=name) for name in category_names]
+        self.stdout.write('Tworzenie tagów...')
+        tag_names = [
+            'python',
+            'django',
+            'orm',
+            'sql',
+            'web',
+            'tutorial',
+            'news',
+            'backend',
+            'frontend',
+            'api'
+        ]
+        tags = [Tag.objects.create(name=name) for name in tag_names]
+        self.stdout.write('Tworzenie postów...')
+        for _ in range(100):
+            post = Post.objects.create(
+                title=fake.sentence(nb_words=6),
+                content=' '.join(fake.paragraphs(nb=5)),
+                publication_date=fake.date_time_this_year(),
+                category=random.choice(categories)
+            )
+            random_tags = random.sample(tags, random.randint(1, 5))
+            post.tags.set(random_tags)
+        self.stdout.write(self.style.SUCCESS('Seeder zakończony sukcesem.'))

@@ -1,0 +1,20 @@
+Napisz prosty, samodzielny skrypt .py (poza projektem Django), który importuje Faker i
+drukuje w konsoli 10 losowych polskich imion i nazwisk oraz 10 losowych zdań.
+
+
+./skrypt.py
+
+from faker import Faker
+
+fake = Faker('pl_PL')
+print("10 losowych imion i nazwisk")
+for _ in range(10):
+    print(fake.name())
+print("\n10losowych zdań:")
+for _ in range(10):
+    print(fake.sentence())
+
+
+python manage.py makemigrations
+python manage.py migrate
+python skrypt.py
