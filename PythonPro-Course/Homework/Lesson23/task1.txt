@@ -1,0 +1,14 @@
+Zarejestruj model Car w panelu administracyjnym, tak aby był w nim widoczny. Użyj
+najprostszej metody admin.site.register().
+
+
+
+./cars/admin.py
+
+from django.contrib import admin
+from .models import Car
+
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    ...

@@ -1,0 +1,50 @@
+W widoku listy (list_display) w CarAdmin wyświetl miniaturkę zdjęcia z pola photo. Pamiętaj
+o bezpieczeństwie i użyj format_html. Ustaw szerokość obrazka na 150 pikseli.
+
+
+
+
+./cars/admin.py
+
+from django.contrib import admin, messages
+from .models import Car
+
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = ('brand','model','year','is_available','full_name')
+    search_fields = ('brand','model')
+    list_filter = ('year','is_available')
+    ordering = ('-year',)
+    actions = ['mark_as_unavailable']
+    def mark_as_unavailable(self, request, queryset):
+        rows_updated = queryset.update(is_available=False)
+        self.message_user(request, f'{rows_updated} samochód jako niedostępne.', 
+                          messages.SUCCESS)
+    mark_as_unavailable.short_description = "Oznacz jako niedostępne "
+    def full_name(self, obj):
+        return f"{obj.brand} {obj.model}"
+    full_name.short_description = 'Full Name'
+    def display_photo(self,obj):
+        if obj.photo:
+             return format_html('<img src="{}" width="150 />', obj.photo.url)
+        return "No photo"
+    display_photo.short_description = "Photo"
+
+./myproject/setting.py
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+./myproject/urls.py
+
+from django.contrib import admin
+from django.conf import settings
+from django.urls import path
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

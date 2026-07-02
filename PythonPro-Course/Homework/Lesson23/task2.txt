@@ -1,0 +1,14 @@
+Stwórz klasę CarAdmin i zarejestruj model Car z jej pomocą (używając dekoratora). W
+list_display wyświetl tylko markę, model, rok produkcji oraz status dostępności
+(is_available).
+
+
+./cars/admin.py
+
+from django.contrib import admin
+from .models import Car
+
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = ('brand','model','year','is_available')

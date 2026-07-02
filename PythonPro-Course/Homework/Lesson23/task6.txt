@@ -1,0 +1,20 @@
+Stwórz w CarAdmin niestandardową metodę full_name, która zwróci połączony string z
+marki i modelu (np. "Ford Mustang"). Dodaj tę metodę do list_display i ustaw jej nagłówek
+(short_description) na "Pełna nazwa".
+
+
+./cars/admin.py
+
+from django.contrib import admin
+from .models import Car
+
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = ('brand','model','year','is_available','full_name')
+    search_fields = ('brand','model')
+    list_filter = ('year','is_available')
+    ordering = ('-year',)
+    def full_name(self, obj):
+        return f"{obj.brand} {obj.model}"
+    full_name.short_description = 'Pełna nazwa'

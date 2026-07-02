@@ -1,0 +1,80 @@
+Stwórz drugi model, Dealer, z polami name (CharField) i address (TextField). Połącz model
+Car z Dealer relacją ForeignKey. Następnie w panelu admina dla Dealera, wyświetl
+wszystkie przypisane do niego samochody w formie TabularInline.
+
+./cars/models.py
+
+from django.db import models as m
+
+
+class Dealer(m.Model):
+    name = m.CharField()
+    address = m.TextField()
+    def __str__(self):
+        return self.name
+
+class Car(m.Model):
+    brand = m.CharField()
+    model = m.CharField()
+    year = m.IntegerField()
+    price = m.DecimalField(max_digits=10, decimal_places=2)
+    description = m.TextField()
+    photo = m.ImageField(upload_to='cars/')
+    owner_website = m.URLField(blank=True)
+    is_available = m.BooleanField(default=True)
+    dealer = m.ForeignKey(Dealer,on_delete=m.CASCADE, related_name='cars', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.brand} {self.model} ({self.year})"
+
+
+./cars/admin.py
+
+
+from django.contrib import admin, messages
+from django.utils.html import format_html
+from .models import Car, Dealer
+
+
+class CarInline(admin.TabularInline):
+    model = Car
+    extra = 1
+
+
+@admin.register(Dealer)
+class DealerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'address')
+    inlines = [CarInline]
+
+
+@admin.register(Car)
+class CarAdmin(admin.ModelAdmin):
+    list_display = ('brand', 'model', 'year', 'is_available', 'full_name', 'display_photo')
+    search_fields = ('brand', 'model')
+    list_filter = ('year', 'is_available')
+    ordering = ('-year',)
+    actions = ['mark_as_unavailable']
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ('year',)
+        return ()
+
+    def full_name(self, obj):
+        return f"{obj.brand} {obj.model}"
+    full_name.short_description = 'Pełna nazwa'
+
+    def mark_as_unavailable(self, request, queryset):
+        rows_updated = queryset.update(is_available=False)
+        self.message_user(
+            request,
+            f'Oznaczono {rows_updated} samochodów jako niedostępne.',
+            messages.SUCCESS
+        )
+    mark_as_unavailable.short_description = 'Oznacz jako niedostępne'
+
+    def display_photo(self, obj):
+        if obj.photo:
+            return format_html('<img src="{}" width="80" />', obj.photo.url)
+        return "No photo"
+    display_photo.short_description = 'Photo'
