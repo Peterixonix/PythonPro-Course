@@ -1,0 +1,53 @@
+Kontekst architektoniczny: Moduł "models" dla aplikacji Flask z SQLAlchemy.
+
+DOMENA: System zarządzania salami konferencyjnymi, rezerwacjami i wyposażeniem.
+
+MODELE I SCHEMAT BAZY DANYCH:
+1. Room (Sale)
+   - Kolumny: id (PK), name, capacity, floor, description, is_active, hourly_rate.
+   - Relacje:
+     * 1:N z Booking (sala ma wiele rezerwacji, backref: room, lazy: dynamic, cascade: all, delete-orphan).
+     * M:N z Equipment (sala ma wiele sprzętów) przez tabelę asocjacyjną room_equipment.
+   - Metody domyślne: is_available(start_time, end_time, exclude_booking_id) - sprawdza nakładanie się rezerwacji ze statusem innym niż 'cancelled'.
+
+2. Equipment (Wyposażenie)
+   - Kolumny: id (PK), name, icon.
+
+3. User (Użytkownicy)
+   - Kolumny: id (PK), email, name, department, is_admin, created_at.
+   - Relacje: 1:N z Booking (backref: user, lazy: dynamic).
+
+4. Booking (Rezerwacje)
+   - Kolumny: id (PK), room_id (FK), user_id (FK), title, description, start_time, end_time, status (confirmed/cancelled/completed), attendees_count, created_at, updated_at.
+   - Indeksy: Złożony indeks na (room_id, start_time, end_time).
+   - Właściwości dynamiczne: duration_hours (oblicza czas w godzinach), total_cost (oblicza koszt na podstawie stawki sali).
+   - Metody domyślne: to_dict z opcjonalnym dołączaniem serializowanych danych relacji (Room, User).
+
+LOGIKA BIZNESOWA (utils.py / globalne):
+1. find_available_rooms(start_time, end_time, min_capacity, required_equipment) - Wyszukuje sale spełniające kryteria wielkości i sprzętu, które nie mają konfliktów rezerwacji w podanym czasie (z użyciem joinedload).
+2. get_booking_statistics(start_date, end_date) - Zwraca agregacje sumaryczne (total_bookings), statystyki dla poszczególnych sal (ilość, godziny) oraz statystyki z podziałem na dni tygodnia dla aktywnych rezerwacji.
+
+GŁÓWNY BAZOWY MODEL:
+Wszystkie modele dziedziczą po Base(db.Model), który implementuje generyczną metodę to_dict(exclude=None).
+
+
+
+Kontekst architektoniczny: Logika aplikacyjna (Routes, Services, Validators).
+
+DOMENA: Zarządzanie żądaniami HTTP oraz logiką biznesową rezerwacji.
+
+ARCHITEKTURA I PODZIAŁ ODPOWIEDZIALNOŚCI:
+1. Warstwa Walidacji (validators/booking_validator.py)
+   - Odpowiada TYLKO za strukturę payloadu i formaty danych wejściowych (m.in sprawdzanie obecności kluczy, parsowanie formatu ISO_8601).
+   - Metoda główna: validate_booking_payload(data) -> (parsed_data, error_message). Zwraca przetworzony bezpiecznie słownik lub komunikat błędu. Nie dotyka bazy danych. Obsługuje uzupełnianie informacji o strefie czasowej dla obiektów naiwnych offsetowo.
+
+2. Warstwa Serwisów (services/booking_service.py)
+   - Odpowiada za logikę biznesową, zapytania do modeli, weryfikację warunków (np. wystarczająca wielkość sali, konflikt czasowy) i wprowadzanie mutacji w DB. Wyrzuca błędy typu `ValueError` obsługiwane przez kontroler.
+   - get_bookings_list(filters, page, per_page): Zwraca obiekt paginacji z zaaplikowanymi filtrami.
+   - create_booking(data): Sprawdza dostępność, przypisuje stawkę (applied_hourly_rate) i tworzy rezerwację w DB.
+   - cancel_booking(booking_id): Obsługuje logikę usuwania, blokując próby anulowania w przeszłości.
+   - search_available_rooms(...): Wrapuje dostęp do funkcji utilitisowej modeli.
+
+3. Warstwa Routingu (routes/booking.py)
+   - Chude kontrolery (Thin Controllers).
+   - Odbiera żądania (args, json), przekazuje do walidatora, wykonuje serwis. Przechwytuje ValueErrors jako kody HTTP 400. Pakuje odpowiedzi i obiekty modelu za pomocą `.to_dict()` do odpowiedniej struktury JSON.
