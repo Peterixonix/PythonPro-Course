@@ -1,0 +1,65 @@
+Wykorzystaj wbudowane widoki Django: PasswordChangeView i
+PasswordChangeDoneView do stworzenia funkcjonalności zmiany hasła przez
+zalogowanego użytkownika. Będziesz musiał dodać odpowiednie ścieżki w urls.py i
+stworzyć dwa proste szablony (password_change_form.html i
+password_change_done.html).
+
+
+./myproject/urls.py
+
+
+from django.contrib import admin
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('login/', auth_views.LoginView.as_view(
+        template_name='login.html'
+    ), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path("", include("app.urls")),
+    path('password_change/', auth_views.PasswordChangeView.as_view(
+        template_name ='password_change.html'),name='password_change'),
+    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(
+        template_name='password_change_done.html'),name= 'password_change_done'),     
+]
+
+
+./app/templates/password_change.html
+
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content-section">
+    <h2>Zmień hasło</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">
+            Zmień hasło
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+
+./app/templates/password_change_done.html
+
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content-section">
+    <h2>Hasło zostało zmienione.</h2>
+
+    <p>Twoje hasło zostało pomyślnie zaktualizowane.</p>
+
+    <a href="{% url 'home' %}" class="btn btn-success">
+        Powrót na stronę główną
+    </a>
+</div>
+{% endblock %}

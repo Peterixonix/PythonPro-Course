@@ -1,0 +1,9 @@
+W pliku settings.py swojego projektu dodaj zmienne LOGIN_REDIRECT_URL oraz
+LOGOUT_REDIRECT_URL. Pierwsza powinna wskazywać na stronę główną ('/' lub nazwę URL strony głównej), a druga na stronę logowania.
+
+
+./myproject/settings.py
+
+
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'

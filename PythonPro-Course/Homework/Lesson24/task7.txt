@@ -1,0 +1,10 @@
+Zmodyfikuj LoginView tak, aby po zalogowaniu użytkownik był przekierowywany na stronę,
+z której przyszedł. (Wskazówka: Django robi to domyślnie, jeśli w adresie URL logowania
+jest parametr next, np. /login/?next=/profile/. Sprawdź, jak to działa w praktyce, próbując
+wejść na chronioną stronę jako niezalogowany użytkownik). Twoim zadaniem jest opisanie
+tego mechanizmu.
+
+
+Mechanizm działa przez parametr next. Gdy niezalogowany użytkownik wejdzie na chroniony widok, 
+Django przekierowuje go na login, np. /login/?next=/profile/. Po poprawnym zalogowaniu użytkownik 
+wraca na adres zapisany w next. Jeśli next nie ma, używane jest LOGIN_REDIRECT_URL.

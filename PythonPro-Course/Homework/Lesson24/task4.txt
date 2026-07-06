@@ -1,0 +1,61 @@
+Upewnij się, że w Twoim szablonie bazowym (base.html) masz pętlę, która wyświetla
+komunikaty z frameworka messages Django. Dzięki temu komunikat o pomyślnej rejestracji,
+który dodaliśmy w widoku, faktycznie się pojawi.
+
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+
+
+
+./app/templates/base.html
+
+
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Moja aplikacja</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/">Strona główna</a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}">Profil</a>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Wyloguj</button>
+            </form>
+            <span>Witaj, {{ user.username }}!</span>
+            {% else %}
+            <a href="{% url 'login' %}">Zaloguj</a>
+            <a href="{% url 'register' %}">Zarejestruj</a>
+            {% endif %}
+        </nav>
+    </header>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
+</body>
+
+</html>
