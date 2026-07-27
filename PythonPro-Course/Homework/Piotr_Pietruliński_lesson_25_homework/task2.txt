@@ -1,0 +1,28 @@
+W nowej aplikacji Django stwórz model Product z polami name (CharField) i price
+(DecimalField). Następnie stwórz dla niego ModelSerializer, który będzie uwzględniał oba te
+pola oraz id.
+
+
+./app/models.py
+
+
+from django.db import models as m
+
+
+class Product(m.Model):
+    name = m.CharField(max_length=200)
+    price = m.DecimalField(decimal_places=2, max_digits=10)
+    def __str__(self):
+        return self.name
+
+
+./app/serializers.py
+
+
+from rest_framework import serializers
+from .models import Product
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'price']

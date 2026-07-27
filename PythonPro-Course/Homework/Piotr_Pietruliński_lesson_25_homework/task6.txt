@@ -1,0 +1,71 @@
+Rozbuduj aplikację z zadania 1-3. Stwórz model Note z polami title, content (TextField) i
+created_at. Zbuduj dla niego pełne API (CRUD) używając ModelViewSet i ModelSerializer.
+Użyj Postmana do przetestowania wszystkich 5 operacji (lista, detal, tworzenie,
+aktualizacja, usuwanie).
+
+
+./app/models.py
+
+
+from django.db import models as m
+
+
+class Product(m.Model):
+    name = m.CharField(max_length=200)
+    price = m.DecimalField(decimal_places=2, max_digits=10)
+    def __str__(self):
+        return self.name
+class Note(m.Model):
+    title = m.CharField(max_length=200)
+    content = m.TextField()
+    created_at = m.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.title
+
+
+./app/serializers.py
+
+
+from rest_framework import serializers
+from .models import Product, Note
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'price']
+
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ['id', 'title', 'content', 'created_at']
+
+
+
+./app/views.py
+
+
+from django.shortcuts import render
+from rest_framework import viewsets
+from .models import Product, Note
+from .serializers import ProductSerializer, NoteSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+class NoteViewSet(viewsets.ModelViewSet):
+    queryset = Note.objects.all().order_by('-created_at')
+    serializer_class = NoteSerializer
+
+@api_view(['GET'])
+def set_name(request):
+    name = request.GET.get('name', 'Gość')
+    response = Response({'message': f"Ustawiono imię: {name}"})
+    response.set_cookie("username", name, max_age=3600)
+    return response
+@api_view(['GET'])
+def hello(request):
+    name = request.COOKIES.get('username','Gość')
+    return Response({"message": f"Witaj, {name}!"})

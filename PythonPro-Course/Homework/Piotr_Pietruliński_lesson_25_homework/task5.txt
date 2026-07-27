@@ -1,0 +1,51 @@
+Stwórz dwa widoki funkcyjne i podłącz je pod adresy /api/hello/ i /api/set-name/. Widok set-
+name powinien przyjmować parametr zapytania name (np. /api/set-name/?name=Anna) i
+ustawiać ciasteczko o nazwie user_name z podaną wartością. Widok hello powinien
+odczytywać to ciasteczko i zwracać komunikat "Witaj, [imię]!" lub "Witaj, Gość!", jeśli
+ciasteczko nie istnieje.
+
+
+./app/views.py
+
+
+from django.shortcuts import render
+from rest_framework import viewsets
+from .models import Product
+from .serializers import ProductSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+@api_view(['GET'])
+def set_name(request):
+    name = request.GET.get('name', 'Gość')
+    response = Response({'message': f"Ustawiono imię: {name}"})
+    response.set_cookie("username", name, max_age=3600)
+    return response
+@api_view(['GET'])
+def hello(request):
+    name = request.COOKIES.get('username','Gość')
+    return Response({"message": f"Witaj, {name}!"})
+
+
+./myproject/urls.py
+
+
+
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework import routers
+from app import views
+
+
+router = routers.DefaultRouter()
+router.register(r'products', views.ProductViewSet)
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
+    path('api/set-name/', views.set_name),
+    path('api/hello', views.hello),
+]

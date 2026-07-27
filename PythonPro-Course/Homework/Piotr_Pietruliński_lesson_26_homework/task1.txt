@@ -1,0 +1,13 @@
+W nowo utworzonym projekcie Django, otwórz plik settings.py. Znajdź listę MIDDLEWARE i
+wyjaśnij w jednym zdaniu, za co (według Ciebie) odpowiadają SessionMiddleware i
+AuthenticationMiddleware.
+
+
+
+1. SessionMiddleware:
+
+Odpowiada za obsługę sesji użytkowników i przechowywanie danych sesji między kolejnymi żądaniami.
+
+2. AuthenticationMiddleware:
+
+Odpowiada za uwierzytelnianie użytkownika oraz udostępnia obiekt request.user, dzięki czemu można sprawdzić, kto jest zalogowany.

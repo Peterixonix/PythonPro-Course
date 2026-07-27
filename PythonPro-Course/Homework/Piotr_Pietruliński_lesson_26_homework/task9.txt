@@ -1,0 +1,13 @@
+W pliku settings.py zmień konfigurację SIMPLE_JWT tak, aby ACCESS_TOKEN_LIFETIME
+wynosił timedelta(seconds=10). Zaloguj się ponownie, aby uzyskać nowy token. Spróbuj
+użyć go do odpytania chronionego endpointu z zadania 8. Odczekaj 10 sekund i spróbuj
+ponownie. Jaką odpowiedź otrzymałeś za drugim razem?
+
+
+
+
+
+
+Po zmianie ACCESS_TOKEN_LIFETIME na timedelta(seconds=10) zalogowałem się ponownie i 
+uzyskałem nowy Access Token. Przed upływem 10 sekund mogłem korzystać z chronionego endpointu. 
+Po odczekaniu ponad 10 sekund i ponownym wysłaniu żądania otrzymałem odpowiedź 401 Unauthorized z komunikatem. Token wygasł

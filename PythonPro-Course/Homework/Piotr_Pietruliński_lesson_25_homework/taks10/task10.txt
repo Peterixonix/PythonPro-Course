@@ -1,0 +1,17 @@
+W serializatorze dla notatek (z zadania 6) dodaj własną metodę walidacji (validate_title),
+która sprawdzi, czy tytuł notatki nie jest krótszy niż 5 znaków. Jeśli jest, serializator
+powinien zwrócić błąd walidacji z odpowiednim komunikatem. Przetestuj działanie, próbując
+dodać za krótką notatkę przez Postmana.
+
+
+./app/serializers.py
+
+
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ['id', 'title', 'content', 'created_at']
+    def validate_title(self, value):
+        if len(value) < 5:
+            raise serializers.ValidationError("Tekst jest za krótki.")
+        return value

@@ -1,0 +1,57 @@
+Stwórz widok funkcyjny (użyj dekoratora @api_view(['GET'])) pod adresem /api/calculate/.
+Widok powinien przyjmować trzy parametry zapytania: num1, num2 i operation (który może
+przyjąć wartości 'add', 'subtract', 'multiply', 'divide'). Widok powinien wykonać odpowiednią
+operację matematyczną i zwrócić wynik w formacie JSON, np. {"result": 15}. Zadbaj o
+obsługę błędów (np. dzielenie przez zero, niepoprawna operacja).
+
+
+/.app/views.py
+
+
+@api_view(['GET'])
+def calculate(request): 
+    try:
+        num1 = request.GET.get("num1")
+        num2 = request.GET.get("num2")
+        operation = request.GET.get("operation")
+        if not num1 or not num2 or not operation:
+            return Response({"error": "Podaj num1, num2 i operation"}, status=400)
+        num1 = float(num1)
+        num2 = float(num2)
+        
+        if operation == 'add':
+            result = num1 + num2
+        elif operation == 'subtract':
+            result = num1 - num2
+        elif operation == 'multiply':
+            result = num1 * num2
+        elif operation == 'divide':
+            if num2 == 0:
+                return Response({"Error": "Nie można dzielić przez zero!"}, status=400)
+            result = num1 / num2
+        else:
+            return Response({"Error": "Niepoprawna operacja!"}, status=400)
+        return Response({"result": result})
+    except(TypeError,ValueError):
+        return Response({"error": "Podaj poprawne liczby."}, status=400)
+
+
+./myproject/urls.py
+
+
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework import routers
+from app import views
+
+
+router = routers.DefaultRouter()
+router.register(r'products', views.ProductViewSet)
+router.register(r'notes', views.NoteViewSet)
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
+    path('api/set-name/', views.set_name),
+    path('api/hello/', views.hello),
+    path('api/calculate/', views.calculate),
+]

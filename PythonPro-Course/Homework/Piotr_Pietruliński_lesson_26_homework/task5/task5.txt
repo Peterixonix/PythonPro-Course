@@ -1,0 +1,3 @@
+Uruchom serwer deweloperski Django. Użyj narzędzia Postman (lub podobnego), aby
+wysłać zapytanie POST na endpoint /auth/users/ i zarejestrować nowego użytkownika.
+Sprawdź w panelu admina Django, czy użytkownik faktycznie został utworzony.

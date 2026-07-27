@@ -1,0 +1,30 @@
+Stwórz ModelViewSet dla modelu Product. Podłącz go do głównego pliku urls.py za
+pomocą DefaultRouter pod adresem /api/products/. Uruchom serwer i wejdź na adres
+http://127.0.0.1:8000/api/products/ w przeglądarce. Co widzisz?
+
+./app/views.py
+
+from django.shortcuts import render
+from rest_framework import viewsets
+from .models import Product
+from .serializers import ProductSerializer
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all().order_by('-created_at')
+    serializer_class = ProductSerializer
+
+./myproject/urls.py
+
+
+from django.contrib import admin
+from django.urls import path, include
+from rest_framework import routers
+from app import views
+
+
+router = routers.DefaultRouter()
+router.register(r'tasks', views.ProductViewSet)
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
+]

@@ -1,0 +1,33 @@
+Stwórz dwa modele: Author (name) i Book (title, publication_year oraz klucz obcy do
+Author). Stwórz serializatory i ViewSety dla obu modeli. Zmodyfikuj BookSerializer tak, aby
+przy wyświetlaniu książki pokazywał nazwę autora, a nie tylko jego ID. Wskazówka:
+poszukaj informacji o Nested Serializers lub StringRelatedField w dokumentacji DRF.
+
+
+./app/models.py
+
+
+from django.db import models as m
+
+
+class Product(m.Model):
+    name = m.CharField(max_length=200)
+    price = m.DecimalField(decimal_places=2, max_digits=10)
+    def __str__(self):
+        return self.name
+class Note(m.Model):
+    title = m.CharField(max_length=200)
+    content = m.TextField()
+    created_at = m.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.title
+class Author(m.Model):
+    name = m.CharField(max_length=200)
+    def __str__(self):
+        return self.name
+class Book(m.Model):
+    title = m.CharField(max_length=200)
+    publication_year = m.IntegerField()
+    author = m.ForeignKey(Author, on_delete= m.CASCADE, related_name= 'books')
+    def __str__(self):
+        return self.title

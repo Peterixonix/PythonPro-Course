@@ -1,0 +1,33 @@
+W projekcie z poprzedniego zadania, skonfiguruj plik settings.py zgodnie z instrukcjami z
+lekcji (dodaj odpowiednie wpisy do INSTALLED_APPS i REST_FRAMEWORK).
+
+./myproject/settings.py
+
+from datetime import timedelta
+
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
+    'rest_framework',
+    'djoser',
+    'app',
+]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+
+SIMPLE_JWT = {
+    "ACCES_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}

@@ -1,0 +1,4 @@
+Wykorzystaj refresh token, który otrzymałeś podczas logowania. Wyślij zapytanie POST na
+endpoint /auth/jwt/refresh/ z ciałem { "refresh": "<twój_refresh_token>" }. W odpowiedzi
+powinieneś otrzymać nowy, świeży access token. Sprawdź, czy ten nowy token działa,
+odpytując chroniony endpoint.

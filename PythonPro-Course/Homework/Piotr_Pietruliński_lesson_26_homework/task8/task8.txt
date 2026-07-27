@@ -1,0 +1,39 @@
+Stwórz prosty widok w DRF (APIView), który będzie dostępny tylko dla zalogowanych
+użytkowników. W tym celu ustaw permission_classes = [IsAuthenticated]. Widok powinien
+zwracać nazwę zalogowanego użytkownika (request.user.username). Przetestuj go w
+Postmanie – najpierw bez tokenu (powinieneś otrzymać błąd 401), a potem z poprawnym
+Authorization: Bearer w nagłówku.
+
+
+./app/views.py
+
+
+from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+
+class UserView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        return Response({
+            "username": request.user.username
+        })
+
+
+./app/urls.py
+
+
+from django.urls import path
+from .views import UserView
+
+urlpatterns = [
+    path("user/", UserView.as_view()),
+]
+
+
+./myproject/urls.py
+
+
+path("", include("app.urls"))

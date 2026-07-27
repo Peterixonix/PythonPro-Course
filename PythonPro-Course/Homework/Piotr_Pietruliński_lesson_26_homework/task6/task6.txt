@@ -1,0 +1,4 @@
+Używając Postmana, wyślij zapytanie POST na endpoint /auth/jwt/create/, aby zalogować
+użytkownika utworzonego w poprzednim zadaniu. Skopiuj otrzymany access token i wklej
+go na stronie jwt.io. Przeanalizuj zdekodowane dane w sekcji "Payload". Czy widzisz tam
+user_id? Jaki jest czas wygaśnięcia (exp)?
