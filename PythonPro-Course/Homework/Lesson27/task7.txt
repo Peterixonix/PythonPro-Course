@@ -1,0 +1,50 @@
+Stwórz widok, który pobiera dane z dwóch źródeł: jedno zapytanie do bazy, które jest proste
+i szybkie, oraz drugie, które symuluje bardzo skomplikowane i długie obliczenia (użyj
+time.sleep(3)). Użyj niskopoziomowego API cache, aby zbuforować tylko wynik tych
+"skomplikowanych obliczeń", a nie całą odpowiedź widoku.
+
+
+app/services.py
+
+
+from django.core.cache import cache
+import time
+
+def get_very_complex_calculation_result():
+    cache_key = 'complex_calculation'
+    result = cache.get(cache_key)
+    if result is None:
+        print("Wykonuję skomplikowane obliczenia...")
+        time.sleep(3)
+        result = {"data": 42, "source": "Obliczone na żywo"}
+        cache.set(cache_key, result, timeout=3600)
+    else:
+        print("Zwracam wynik cache!")
+        result['sources'] = 'Pobrane z cache'
+    return result
+
+
+app/views/py
+
+
+from django.shortcuts import render
+from django.views.decorators.cache import cache_page
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializers import ProductSerializer
+from .services import get_very_complex_calculation_result
+
+
+
+
+@cache_page(60)
+@api_view(['GET'])
+def product_list(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    calculation = get_very_complex_calculation_result()
+    return Response({
+        "products": serializer.data,
+        "calculation": calculation
+    })

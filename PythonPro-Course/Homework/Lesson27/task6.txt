@@ -1,0 +1,22 @@
+Zmień konfigurację cache w settings.py na FileBasedCache. Stwórz odpowiedni katalog.
+Użyj widoku z zadania 3. Sprawdź, czy po pierwszym odwołaniu do widoku w Twoim
+katalogu cache pojawiły się nowe pliki. Co zawierają te pliki?
+
+
+.myproject/settings.py
+
+
+import os
+
+CACHES = {
+'default': {
+    'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+    'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
+}}
+
+
+
+Po zmianie cache na FileBasedCache i pierwszym wejściu na widok z dekoratorem @cache_page(60) 
+w folderze cache pojawiły się nowe pliki. Są to pliki, w których Django zapisuje dane z pamięci podręcznej. 
+Zawierają one zapisaną odpowiedź z widoku oraz informacje potrzebne do jej ponownego wykorzystania, np. czas wygaśnięcia cache. 
+Po otwarciu tych plików w zwykłym edytorze tekstu ich zawartość jest nieczytelna, ponieważ dane są zapisane w formacie binarnym.

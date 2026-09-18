@@ -1,0 +1,4 @@
+Stwórz ModelViewSet dla jednego z Twoich modeli. Użyj dekoratora
+@method_decorator(cache_page(...)) tak, aby widok listy (list) był cachowany na 10 minut,
+a widok szczegółów (retrieve) tylko na 1 minutę. Metody create, update, destroy nie
+powinny być cachowane w ogóle.

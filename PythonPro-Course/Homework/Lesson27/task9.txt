@@ -1,0 +1,6 @@
+Rozszerz zadanie 8. Zaimplementuj logikę, która po każdej udanej operacji update lub
+partial_update na obiekcie, unieważni (usunie) klucz cache dla widoku szczegółów
+(retrieve) tego konkretnego obiektu. Wskazówka: sygnały Django (post_save) lub
+nadpisanie metody perform_update w ViewSetcie mogą być pomocne. Musisz też wiedzieć,
+jak Django buduje klucze cache dla widoków (może to wymagać trochę researchu lub
+użycia własnych kluczy).

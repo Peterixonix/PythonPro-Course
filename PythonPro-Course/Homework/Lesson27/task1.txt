@@ -1,0 +1,16 @@
+W swoim projekcie Django, w pliku settings.py, skonfiguruj domyślny cache tak, aby używał
+django.core.cache.backends.locmem.LocMemCache. Uruchom serwer, aby upewnić się, że
+aplikacja startuje bez błędów.
+
+
+./myproject/settings.py
+
+
+CACHES = {
+'default': {
+    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    'LOCATION': 'unique-snowflake'
+}}
+
+python manage.py makemigrations
+python manage.py migrate

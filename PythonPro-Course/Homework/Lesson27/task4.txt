@@ -1,0 +1,13 @@
+Uruchom Django shell za pomocą komendy python manage.py shell. Zaimportuj from
+django.core.cache import cache. Użyj cache.set('my_key', 'hello world', 30) aby ustawić
+wartość, a następnie cache.get('my_key') aby ją odczytać. Poczekaj 30 sekund i spróbuj
+odczytać ją ponownie. Co się stało?
+
+Użyj cache.set('my_key', 'hello world', 30)
+
+my_key - klucz
+hello_world - wartość
+30 - czas (w sekundach) 
+
+
+Klucz z wartością został ustawiony na 30 sekund. Po upłynięciu wyznaczonego czasu wygasł

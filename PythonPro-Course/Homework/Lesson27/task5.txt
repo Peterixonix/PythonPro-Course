@@ -1,0 +1,9 @@
+Znajdź w dokumentacji Django komendę manage.py, która pozwala na wyczyszczenie
+całego cache. Użyj jej w terminalu, aby usunąć wszystkie zbuforowane dane.
+
+
+python manage.py shell
+
+from django.core.cache import cache
+cache.clear()
+exit()

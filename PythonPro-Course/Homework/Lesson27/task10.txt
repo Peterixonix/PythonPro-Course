@@ -1,0 +1,5 @@
+To zadanie wymaga zainstalowania Redis na Twoim komputerze (np. przez Docker).
+Zainstaluj bibliotekę django-redis (pip install django-redis). Zmień konfigurację CACHES w
+settings.py, aby używać Redis jako backendu. Sprawdź za pomocą Django Debug Toolbar,
+czy Twoja aplikacja poprawnie komunikuje się z serwerem Redis. Jest to konfiguracja
+zbliżona do produkcyjnej.

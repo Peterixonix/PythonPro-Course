@@ -1,0 +1,74 @@
+Wybierz jeden z istniejących, prostych widoków GET w Twoim API (np. lista obiektów). Za
+pomocą dekoratora @cache_page ustaw cache na 60 sekund. Użyj Django Debug Toolbar,
+aby zweryfikować, że przy pierwszym żądaniu jest "cache miss", a przy kolejnych (w ciągu
+60 sekund) jest "cache hit".
+
+
+.app/models.py
+
+
+from django.db import models as m
+
+class Product(m.Model):
+    name = m.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+
+
+.app/serializers.py
+
+
+from rest_framework import serializers
+from .models import Product
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
+.app/views.py
+
+
+from django.shortcuts import render
+from django.views.decorators.cache import cache_page
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Product
+from .serializers import ProductSerializer
+
+
+
+
+@cache_page(60)
+@api_view(['GET'])
+def product_list(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+
+app/urls.py
+
+
+from django.urls import path
+from .views import product_list
+
+
+urlpatterns = [
+    path("products/", product_list),
+]
+
+
+
+myproject/settings.py
+
+
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('__debug__/', include('debug_toolbar.urls')),
+    path('api/', include('app.urls'))
+]
