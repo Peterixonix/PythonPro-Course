@@ -1,0 +1,1 @@
+Celery wykorzystałbym do wykonywania zadań w tle, np. wysyłania powiadomień użytkownikom o zmianie statusu zamówienia. Dzięki temu bot mógłby działać płynnie i nie czekać na zakończenie tych operacji.
